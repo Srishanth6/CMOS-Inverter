@@ -1,0 +1,3 @@
+* Educational Level 1 MOSFET models used in the LTspice CMOS inverter exercise
+.model NM NMOS (LEVEL=1 VTO=1 KP=200u LAMBDA=0.02)
+.model PM PMOS (LEVEL=1 VTO=-1 KP=200u LAMBDA=0.02)
