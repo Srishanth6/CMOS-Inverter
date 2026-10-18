@@ -1,78 +1,136 @@
 # CMOS Inverter Simulation Using LTspice
 
-## Overview
+## 1. Project overview
 
-This project explores the design and simulation of a CMOS inverter using complementary NMOS and PMOS transistors in LTspice. The circuit was simulated in two configurations—**without an external load** and **with a 10 kΩ output load**—to observe the input/output waveforms and study the effect of output loading.
+This project explores a complementary MOS (CMOS) inverter using an NMOS transistor and a PMOS transistor in LTspice. The circuit was simulated with a pulse input, and the work includes transient waveform observation, a DC operating-point check, and an exploratory AC-analysis setup.
 
-## Objectives
+Two output configurations were studied:
 
-- Build a CMOS inverter using NMOS and PMOS transistor models.
-- Apply a pulse input and observe the transient response.
-- Simulate and compare the circuit with and without an output load.
-- Inspect the DC operating point.
-- Gain practical experience with LTspice schematic design and simulation analysis.
+- **Unloaded inverter:** no external resistor connected to the output.
+- **Loaded inverter:** a 10 kΩ resistor connected between the output and ground.
 
-## Circuit specifications
+The purpose of the exercise was to get practical experience building a transistor-level schematic, defining MOSFET models, running different analyses, and interpreting simulation plots.
+
+## 2. Project objectives
+
+- Build a CMOS inverter at transistor level.
+- Understand the roles of the PMOS pull-up device and NMOS pull-down device.
+- Apply a pulse signal and observe the input/output response over time.
+- Compare the circuit with and without a resistive output load.
+- Use the DC operating-point report to inspect node voltages and transistor currents.
+- Become familiar with transient and AC analysis in LTspice.
+
+## 3. CMOS inverter operation
+
+A CMOS inverter uses two complementary MOSFETs. The PMOS is connected to the positive supply and the NMOS is connected to ground. Their gates share the input, and their drains share the output.
+
+- **Input low:** the PMOS is intended to turn on and pull the output toward VDD, while the NMOS is intended to be off.
+- **Input high:** the NMOS is intended to turn on and pull the output toward ground, while the PMOS is intended to be off.
+
+This gives the inverter its logical inversion: a low input should produce a high output, and a high input should produce a low output.
+
+## 4. Circuit specifications
 
 | Parameter | Value |
 |---|---|
 | Supply voltage (VDD) | 5 V |
 | NMOS transistor | M1 |
-| NMOS model | NM |
+| NMOS model name | `NM` |
 | NMOS dimensions | L = 10 µm, W = 10 µm |
 | PMOS transistor | M2 |
-| PMOS model | PM |
+| PMOS model name | `PM` |
 | PMOS dimensions | L = 10 µm, W = 20 µm |
 | Input source | `PULSE(0 5 2m 1n 1n 5m 10m)` |
-| Transient analysis | `.tran 20m` |
-| Loaded configuration | 10 kΩ resistor from output to ground |
+| Transient command | `.tran 20m` |
+| Loaded case | 10 kΩ resistor from output to ground |
 
-## MOSFET model definitions
+## 5. MOSFET model definitions
 
-The simulation uses basic Level 1 MOSFET models:
+The circuit used simple Level 1 MOSFET models:
 
 ```spice
 .model NM NMOS (LEVEL=1 VTO=1 KP=200u LAMBDA=0.02)
 .model PM PMOS (LEVEL=1 VTO=-1 KP=200u LAMBDA=0.02)
 ```
 
-These simplified models are intended for introductory circuit simulation and learning.
+- `VTO` defines the model's threshold voltage.
+- `KP` is a model parameter related to MOSFET transconductance strength.
+- `LAMBDA` represents channel-length modulation in this simplified model.
+- The transistor `L` and `W` values define the channel dimensions used in the schematic.
 
-## Circuit configurations
+These are educational models for learning the simulation workflow; they are not a foundry-specific process model.
 
-### 1. CMOS inverter without load
+## 6. Simulation results and diagrams
 
-The initial circuit was simulated with the NMOS and PMOS transistors connected in a complementary inverter arrangement. A pulse source was applied to the common gate input, and the output waveform was observed using transient analysis.
+The images below are the screenshots captured from the LTspice exercise.
 
-**What was explored**
-- CMOS inverter topology and transistor connections
-- Pulse input switching between 0 V and 5 V
-- Input and output waveforms over a 20 ms simulation interval
+### 6.1 CMOS inverter schematic
 
-### 2. CMOS inverter with a 10 kΩ load
+This schematic shows the complementary NMOS/PMOS arrangement, the 5 V supply, and the pulse source applied to the common gate input. The shared drain connection is the output node.
 
-A 10 kΩ resistor was connected from the output node to ground, and the circuit was simulated again.
+![CMOS inverter schematic](cmos_inverter_schematic.jpg)
 
-**What was explored**
-- Output behavior with a resistive load
-- Comparison of the loaded and unloaded circuit waveforms
-- How an external load changes the output network
+### 6.2 Transient response without an external load
 
-## Loaded and unloaded comparison
+The unloaded circuit was simulated over 20 ms. The input pulse switches between 0 V and 5 V. The plotted traces allow the input and output to be observed across the switching intervals.
+
+![CMOS inverter transient response without load](cmos_inverter_without_load.jpg)
+
+### 6.3 Transient response with a 10 kΩ output load
+
+For the loaded configuration, a 10 kΩ resistor was connected from the output node to ground. This adds a resistive path from the output to ground and provides a second configuration for waveform observation.
+
+![CMOS inverter transient response with 10 kΩ load](cmos_inverter_with_10k_load.jpg)
+
+### 6.4 DC operating-point report
+
+The operating-point report lists the node voltages and currents calculated by LTspice for the DC bias condition. It is useful for checking the operating state of the circuit independently of the time-varying waveform.
+
+![LTspice DC operating point](dc_operating_point.jpg)
+
+## 7. Transient analysis setup
+
+The input source was configured as:
+
+```spice
+PULSE(0 5 2m 1n 1n 5m 10m)
+```
+
+The pulse parameters mean:
+
+| Parameter | Value | Meaning |
+|---|---:|---|
+| Initial voltage | 0 V | Starting input level |
+| Pulsed voltage | 5 V | High input level |
+| Delay | 2 ms | Time before the first rising edge |
+| Rise time | 1 ns | Transition time from low to high |
+| Fall time | 1 ns | Transition time from high to low |
+| Pulse width | 5 ms | Duration of the high level |
+| Period | 10 ms | Time for one complete pulse cycle |
+
+The transient command was:
+
+```spice
+.tran 20m
+```
+
+This asks LTspice to calculate the time-domain response over a 20 ms interval, allowing the pulse to be observed across multiple transitions.
+
+## 8. Loaded and unloaded comparison
 
 | Feature | Without load | With 10 kΩ load |
 |---|---|---|
 | Supply voltage | 5 V | 5 V |
 | Input signal | 0–5 V pulse | 0–5 V pulse |
-| Output load | No added resistor | 10 kΩ to ground |
+| Additional output component | None | 10 kΩ resistor to ground |
 | Analysis | Transient | Transient |
-| Main focus | Observe inverter switching response | Observe response with an output load |
+| Main learning focus | Observe inverter switching | Observe output with resistive loading |
 
-The simulations provide a practical comparison of the same CMOS inverter topology under two output-loading conditions.
+The two simulations use the same basic inverter and input stimulus. The added resistor changes the output load, which can affect the output voltage and the current demanded from the circuit. This exercise provides a visual comparison of the two configurations; no quantitative delay or power comparison is claimed.
 
-## DC operating-point analysis
+## 9. DC operating-point analysis
 
-The LTspice operating-point analysis was also run to inspect the circuit's node voltages and transistor currents. With the input at 0 V, the reported node voltages included:
+The operating-point analysis was run with the input at 0 V. The report showed:
 
 | Measurement | Simulated value |
 |---|---:|
@@ -82,37 +140,47 @@ The LTspice operating-point analysis was also run to inspect the circuit's node 
 | Drain current of M1 | Approximately 1.001 × 10⁻¹¹ A |
 | Drain current of M2 | Approximately 9.815 × 10⁻¹² A |
 
-These values are recorded from the LTspice operating-point report.
+The reported 5 V output for a 0 V input matches the expected high-output state. The operating-point window also provides a useful example of how LTspice reports node voltages and device currents.
 
-## AC analysis
+## 10. AC analysis
 
-An AC analysis was also explored using a 2.5 V DC input bias, an AC amplitude of 1, and the following directive:
+An AC analysis was also explored using a 2.5 V DC input bias, an AC amplitude of 1, and this directive:
 
 ```spice
 .ac dec 100 1 100Meg
 ```
 
-This was part of the practical exploration of LTspice's available analysis modes.
+AC analysis evaluates a circuit's small-signal response around its DC operating point. The directive requests a logarithmic sweep from 1 Hz to 100 MHz with 100 points per decade. In this project, it was an introductory exploration of the AC-analysis workflow rather than a validated gain or bandwidth measurement.
 
-## Simulation workflow
+## 11. Workflow followed
 
 1. Draw the CMOS inverter schematic in LTspice.
 2. Connect the PMOS to the positive supply and the NMOS to ground.
-3. Connect the transistor gates to the input and the drains to the output.
-4. Define the NMOS and PMOS models.
-5. Apply the pulse input and run transient analysis.
+3. Connect both gates to the input and both drains to the output.
+4. Define the NMOS and PMOS model statements.
+5. Apply the pulse source and run transient analysis.
 6. Observe the input and output waveforms.
-7. Add a 10 kΩ resistor at the output and run the loaded configuration.
-8. Run the DC operating-point analysis to inspect node voltages and transistor currents.
+7. Add a 10 kΩ resistor from the output to ground and run the loaded configuration.
+8. Run the DC operating-point analysis and inspect the node voltages and transistor currents.
+9. Explore the AC-analysis setup.
 
-## Tools and concepts
+## 12. Tools and concepts practiced
 
 - **Software:** LTspice
 - **Circuit:** CMOS inverter
 - **Devices:** NMOS and PMOS MOSFETs
 - **Analyses:** Transient, DC operating point, and exploratory AC analysis
-- **Concepts practiced:** CMOS switching, transistor-level schematic design, pulse sources, output loading, and waveform interpretation
+- **Concepts:** CMOS switching, transistor-level schematic design, MOSFET model parameters, pulse sources, output loading, and waveform interpretation
 
-## Conclusion
+## 13. Conclusion
 
-A CMOS inverter was designed and simulated in LTspice using NMOS and PMOS transistor models. Both unloaded and 10 kΩ-loaded configurations were explored, along with transient waveform observation and DC operating-point analysis. This exercise provided practical experience with transistor-level circuit construction, simulation setup, and interpreting circuit responses under different loading conditions.
+A CMOS inverter was assembled and simulated in LTspice using NMOS and PMOS transistor models. The exercise covered the unloaded circuit, a 10 kΩ-loaded configuration, transient waveforms, and DC operating-point analysis, with an additional exploration of AC analysis. It provided practical experience in constructing a transistor-level circuit, setting up simulation directives, and reading LTspice results.
+
+## Repository contents
+
+- `README.md` — project description, circuit details, analysis setup, and linked results.
+- `models/inverter_models.lib` — NMOS and PMOS model definitions.
+- `cmos_inverter_schematic.jpg` — schematic screenshot.
+- `cmos_inverter_without_load.jpg` — unloaded transient screenshot.
+- `cmos_inverter_with_10k_load.jpg` — loaded transient screenshot.
+- `dc_operating_point.jpg` — DC operating-point screenshot.
