@@ -1,0 +1,14 @@
+* CMOS inverter, unloaded transient
+* Rebuilt from the circuit described in the README (original LTspice schematic was not in the repo).
+* VDD=5 V, NMOS 10u/10u, PMOS 20u/10u, PULSE and .tran as documented.
+
+.include ../models/inverter_models.lib
+
+VDD vdd 0 5
+VIN in 0 PULSE(0 5 2m 1n 1n 5m 10m)
+
+M1 out in 0 0 NM L=10u W=10u
+M2 out in vdd vdd PM L=10u W=20u
+
+.tran 20m
+.end

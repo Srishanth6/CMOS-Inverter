@@ -1,0 +1,13 @@
+* CMOS inverter DC operating point, input held at 0 V
+* Matches the condition described for the LTspice operating-point screenshot.
+
+.include ../models/inverter_models.lib
+
+VDD vdd 0 5
+VIN in 0 0
+
+M1 out in 0 0 NM L=10u W=10u
+M2 out in vdd vdd PM L=10u W=20u
+
+.op
+.end
