@@ -2,7 +2,7 @@
 
 ## 1. Project overview
 
-This project explores a complementary MOS (CMOS) inverter using an NMOS transistor and a PMOS transistor in LTspice. The circuit was simulated with a pulse input, and the work includes transient waveform observation, a DC operating-point check, and an exploratory AC-analysis setup.
+This project explores a complementary MOS (CMOS) inverter using an NMOS transistor and a PMOS transistor in LTspice. The circuit was simulated with a pulse input, and the work includes transient waveform observation and a DC operating-point check. An AC sweep was tried in LTspice during the original exercise, but no AC netlist or plot was kept, and the Level-1 models have no capacitances, so that sweep is not treated as a result here.
 
 Two output configurations were studied:
 
@@ -144,13 +144,7 @@ The reported 5 V output for a 0 V input matches the expected high-output state. 
 
 ## 10. AC analysis
 
-An AC analysis was also explored using a 2.5 V DC input bias, an AC amplitude of 1, and this directive:
-
-```spice
-.ac dec 100 1 100Meg
-```
-
-AC analysis evaluates a circuit's small-signal response around its DC operating point. The directive requests a logarithmic sweep from 1 Hz to 100 MHz with 100 points per decade. In this project, it was an introductory exploration of the AC-analysis workflow rather than a validated gain or bandwidth measurement.
+An AC analysis was tried in the original LTspice session with a 2.5 V DC bias, an AC amplitude of 1, and `.ac dec 100 1 100Meg`. No netlist or plot from that run is in the repository, and the Level-1 models in `models/inverter_models.lib` do not include capacitances, so a frequency sweep would not be a meaningful bandwidth measurement. That setup is not claimed as a result.
 
 ## 11. Workflow followed
 
@@ -162,7 +156,7 @@ AC analysis evaluates a circuit's small-signal response around its DC operating 
 6. Observe the input and output waveforms.
 7. Add a 10 kΩ resistor from the output to ground and run the loaded configuration.
 8. Run the DC operating-point analysis and inspect the node voltages and transistor currents.
-9. Explore the AC-analysis setup.
+9. An AC-analysis setup was tried in LTspice; it is not included here (see section 10).
 
 ## 12. Tools and concepts practiced
 
@@ -180,7 +174,17 @@ A CMOS inverter was assembled and simulated in LTspice using NMOS and PMOS trans
 
 - `README.md` — project description, circuit details, analysis setup, and linked results.
 - `models/inverter_models.lib` — NMOS and PMOS model definitions.
-- `cmos_inverter_schematic.jpg` — schematic screenshot.
-- `cmos_inverter_without_load.jpg` — unloaded transient screenshot.
-- `cmos_inverter_with_10k_load.jpg` — loaded transient screenshot.
-- `dc_operating_point.jpg` — DC operating-point screenshot.
+- `simulation/cmos_inverter_unloaded.net` — unloaded transient netlist (rebuilt from this README).
+- `simulation/cmos_inverter_loaded.net` — same circuit with a 10 kOhm load to ground.
+- `simulation/cmos_inverter_dc_op.net` — DC operating-point netlist, input held at 0 V.
+- `cmos_inverter_schematic.jpg` — schematic screenshot from the original LTspice run.
+- `cmos_inverter_without_load.jpg` — unloaded transient screenshot from that run.
+- `cmos_inverter_with_10k_load.jpg` — loaded transient screenshot from that run.
+- `dc_operating_point.jpg` — DC operating-point screenshot from that run.
+- `LICENSE`
+
+The screenshots and the DC numbers in section 9 come from the original LTspice session. The netlists are here so the same circuit can be re-run in LTspice or ngspice. They have not been re-simulated in this update, so no new delay, gain or current figures are reported.
+
+## License
+
+MIT, see [LICENSE](LICENSE). Copyright (c) 2026 B. Srishanth Reddy.
